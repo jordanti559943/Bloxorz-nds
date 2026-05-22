@@ -12,9 +12,11 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Install devkitARM
       run: |
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6AF0E1940624A69A
+        sudo add-apt-repository ppa:devkitpro/ppa
         sudo apt-get update
         sudo apt-get install -y devkitarm libnds-dev libfat-dev
     
