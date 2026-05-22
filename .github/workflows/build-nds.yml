@@ -2,53 +2,30 @@ name: Build Nintendo DS ROM
 
 on:
   push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Install devkitARM
+    - uses: actions/checkout@v4
+    
+    - name: Install DevKit
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget
-        cd /tmp
-        wget https://github.com/devkitPro/pacman/releases/download/v1.0.2/devkitpro-pacman.amd64.deb
-        sudo dpkg -i devkitpro-pacman.amd64.deb
-        sudo dkp-pacman -S --noconfirm devkitARM libnds libfat
-    
-    - name: Set environment variables
-      run: |
-        echo "DEVKITPRO=/opt/devkitpro" >> $GITHUB_ENV
-        echo "DEVKITARM=/opt/devkitpro/devkitARM" >> $GITHUB_ENV
-        echo "/opt/devkitpro/devkitARM/bin" >> $GITHUB_PATH
+        sudo apt-get install -y devkitpro-pacman
+        sudo dkp-pacman -Syu --noconfirm
+        sudo dkp-pacman -S --noconfirm devkitARM libnds libfat-dev
     
     - name: Build ROM
       run: |
-        if [ -f Makefile ]; then
-          make clean
-          make -j4
-        else
-          echo "No Makefile found. Please create a Makefile for your project."
-          exit 1
-        fi
+        export DEVKITPRO=/opt/devkitpro
+        export DEVKITARM=/opt/devkitpro/devkitARM
+        make
     
-    - name: Upload ROM artifact
-      if: success()
+    - name: Upload ROM
       uses: actions/upload-artifact@v4
       with:
-        name: bloxorz-nds-rom
+        name: bloxorz-rom
         path: "*.nds"
-        retention-days: 30
-    
-    - name: Upload build log on failure
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-log
-        path: "build.log"
