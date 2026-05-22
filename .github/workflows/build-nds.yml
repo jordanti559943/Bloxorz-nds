@@ -1,31 +1,29 @@
-name: Build Nintendo DS ROM
+name: Build NDS
 
-on:
-  push:
-    branches: [ main ]
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Install DevKit
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y devkitpro-pacman
-        sudo dkp-pacman -Syu --noconfirm
-        sudo dkp-pacman -S --noconfirm devkitARM libnds libfat-dev
-    
-    - name: Build ROM
-      run: |
-        export DEVKITPRO=/opt/devkitpro
-        export DEVKITARM=/opt/devkitpro/devkitARM
-        make
-    
-    - name: Upload ROM
-      uses: actions/upload-artifact@v4
-      with:
-        name: bloxorz-rom
-        path: "*.nds"
+      - uses: actions/checkout@v5
+
+      - name: Install devkitPro
+        run: |
+          sudo apt update
+          sudo apt install -y wget gnupg
+
+          wget https://apt.devkitpro.org/install-devkitpro-pacman
+          chmod +x install-devkitpro-pacman
+          sudo ./install-devkitpro-pacman
+
+          sudo dkp-pacman -Sy --noconfirm devkitARM libnds
+
+      - name: Set environment
+        run: |
+          echo "DEVKITPRO=/opt/devkitpro" >> $GITHUB_ENV
+          echo "DEVKITARM=/opt/devkitpro/devkitARM" >> $GITHUB_ENV
+
+      - name: Build
+        run: make
