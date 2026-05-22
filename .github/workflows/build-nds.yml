@@ -1,0 +1,50 @@
+name: Build Nintendo DS ROM
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install devkitARM
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y devkitarm libnds-dev libfat-dev
+    
+    - name: Set environment variables
+      run: |
+        echo "DEVKITPRO=/opt/devkitpro" >> $GITHUB_ENV
+        echo "DEVKITARM=/opt/devkitpro/devkitARM" >> $GITHUB_ENV
+        echo "/opt/devkitpro/devkitARM/bin" >> $GITHUB_PATH
+    
+    - name: Build ROM
+      run: |
+        if [ -f Makefile ]; then
+          make clean
+          make -j4
+        else
+          echo "No Makefile found. Please create a Makefile for your project."
+          exit 1
+        fi
+    
+    - name: Upload ROM artifact
+      if: success()
+      uses: actions/upload-artifact@v3
+      with:
+        name: bloxorz-nds-rom
+        path: "*.nds"
+        retention-days: 30
+    
+    - name: Upload build log on failure
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-log
+        path: "build.log"
