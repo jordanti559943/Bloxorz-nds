@@ -36,7 +36,7 @@ jobs:
     
     - name: Upload ROM artifact
       if: success()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: bloxorz-nds-rom
         path: "*.nds"
@@ -44,7 +44,7 @@ jobs:
     
     - name: Upload build log on failure
       if: failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-log
         path: "build.log"
