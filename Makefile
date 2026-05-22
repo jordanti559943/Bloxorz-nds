@@ -1,21 +1,24 @@
-TARGET      := bloxorz
-BUILD       := build
-SOURCES     := .
-DATA        := .
-INCLUDES    := .
+TARGET		:= bloxorz
+BUILD		:= build
+SOURCES		:= .
+DATA		:= .
+INCLUDES	:= .
 
-ARCH        := -mthumb -mthumb-interwork
+ARCH	:=	-mthumb -mthumb-interwork
 
-CFLAGS      := -g -Wall -O2 $(ARCH)
-CXXFLAGS    := $(CFLAGS)
+CFLAGS	:=	-g -Wall -O2 \
+			$(ARCH)
 
-LDFLAGS     := -specs=ds_arm9.specs $(ARCH)
+CXXFLAGS	:= $(CFLAGS)
 
-LIBS        := -lnds9
+LDFLAGS	=	-g $(ARCH) -specs=ds_arm9.specs
 
-LIBDIRS     := $(LIBNDS)
+LIBS	:= -lnds9
 
-export TARGET BUILD SOURCES DATA INCLUDES ARCH
-export CFLAGS CXXFLAGS LDFLAGS LIBS LIBDIRS
+LIBDIRS	:= $(LIBNDS)
+
+export TARGET BUILD SOURCES DATA INCLUDES LIBDIRS
+
+export ARCH CFLAGS CXXFLAGS LDFLAGS
 
 include $(DEVKITPRO)/libnds/default_arm9_rules
