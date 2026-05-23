@@ -9,21 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Install devkitPro
-        run: |
-          sudo apt update
-          sudo apt install -y wget gnupg
-
-          wget https://apt.devkitpro.org/install-devkitpro-pacman
-          chmod +x install-devkitpro-pacman
-          sudo ./install-devkitpro-pacman
-
-          sudo dkp-pacman -Sy --noconfirm devkitARM libnds
-
-      - name: Set environment
-        run: |
-          echo "DEVKITPRO=/opt/devkitpro" >> $GITHUB_ENV
-          echo "DEVKITARM=/opt/devkitpro/devkitARM" >> $GITHUB_ENV
+      - name: Install BlocksDS SDK
+        uses: blocksds/sdk@main
 
       - name: Build
         run: make
