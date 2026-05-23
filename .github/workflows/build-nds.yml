@@ -9,8 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Install devkitPro
         run: |
@@ -20,13 +19,14 @@ jobs:
           chmod +x install-devkitpro-pacman
           sudo ./install-devkitpro-pacman
 
-      - name: Install NDS tools
+      - name: Install DS toolchain
         run: |
           sudo dkp-pacman -Syu --noconfirm
-          sudo dkp-pacman -S --noconfirm nds-dev
+          sudo dkp-pacman -S --noconfirm nds-dev devkitARM
 
-      - name: Build
+      - name: Build project
         run: |
           export DEVKITPRO=/opt/devkitpro
           export DEVKITARM=/opt/devkitpro/devkitARM
+          make clean || true
           make
