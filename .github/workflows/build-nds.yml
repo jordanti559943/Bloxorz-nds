@@ -1,16 +1,10 @@
-name: Build NDS
+- name: Install devkitPro
+  run: |
+    sudo apt-get update
 
-on: [push]
+    sudo apt-get install -y \
+      devkitpro-pacman
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Install BlocksDS SDK
-        uses: blocksds/sdk@main
-
-      - name: Build
-        run: make
+    sudo dkp-pacman -Sy --noconfirm \
+      nds-dev \
+      libnds
