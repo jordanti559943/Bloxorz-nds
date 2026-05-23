@@ -22,3 +22,4 @@ export TARGET BUILD SOURCES DATA INCLUDES LIBDIRS
 export ARCH CFLAGS CXXFLAGS LDFLAGS
 
 include $(DEVKITPRO)/libnds/default_arm9_rules
+include $(DEVKITPRO)/devkitARM/ds_rules
