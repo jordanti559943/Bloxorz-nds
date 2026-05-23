@@ -1,10 +1,32 @@
-- name: Install devkitPro
-  run: |
-    sudo apt-get update
+name: Build NDS
 
-    sudo apt-get install -y \
-      devkitpro-pacman
+on:
+  push:
+  workflow_dispatch:
 
-    sudo dkp-pacman -Sy --noconfirm \
-      nds-dev \
-      libnds
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install devkitPro
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://apt.devkitpro.org/install-devkitpro-pacman
+          chmod +x install-devkitpro-pacman
+          sudo ./install-devkitpro-pacman
+
+      - name: Install NDS tools
+        run: |
+          sudo dkp-pacman -Syu --noconfirm
+          sudo dkp-pacman -S --noconfirm nds-dev
+
+      - name: Build
+        run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITARM=/opt/devkitpro/devkitARM
+          make
